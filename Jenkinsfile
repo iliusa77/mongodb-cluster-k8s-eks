@@ -37,6 +37,8 @@ stages {
                         --nodes-min 3
                         --nodes-max 5
                         --node-type ${ec2_type_server} 
+                        --node-volume-size 8
+                        --node-volume-type gp2
                     """
                 }
             }
