@@ -1,0 +1,16 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: mongoClusterProd
+  region: eu-west-1
+
+nodeGroups:
+  - name: mongoNG
+    instanceType: t2.micro
+    volumeSize: 8
+    volumeType: gp2
+    minSize: 3
+    desiredCapacity: 3
+    maxSize: 5
+    availabilityZones: ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
