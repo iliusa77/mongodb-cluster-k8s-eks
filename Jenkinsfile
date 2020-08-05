@@ -34,6 +34,8 @@ stages {
                         --name ${eks_cluster_name} \
                         --region ${region} \
                         --nodes 3 \
+                        --nodes-min 3
+                        --nodes-max 5
                         --node-type ${ec2_type_server} 
                     """
                 }
