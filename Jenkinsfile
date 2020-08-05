@@ -28,7 +28,8 @@ stages {
         stage('Deploy Cluster'){
             steps {
                withAWS(credentials: "aws_access", region: "${region}") {
-                    bash """#!/bin/bash
+                    sh """
+                        #!/bin/bash
                         eksctl create cluster \
                         --name ${eks_cluster_name} \
                         --region ${region} \
