@@ -20,15 +20,6 @@ pipeline {
  
  
 stages {
-        stage('Initialize'){
-            steps{
-                echo "Initialization"
-                script {
-                    manager.addShortText("${eks_cluster_name}", "black", "lightsalmon", "0px", "white")
-                    manager.addShortText("${ec2_type_server}", "black", "lightblue", "0px", "white")
-                }
-            }
-        }
         stage('Checkout'){
             steps {
                 checkout scm
