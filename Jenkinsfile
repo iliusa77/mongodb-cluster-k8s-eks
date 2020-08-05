@@ -7,15 +7,15 @@ pipeline {
             string(
                  name: 'eks_cluster_name',
                  defaultValue: '',
-                 description: ''),
+                 description: '')
             string(
                  name: 'ec2_type_server',
                  defaultValue: 't2.micro',
-                 description: ''),
+                 description: '')
             string(
                  name: 'region',
                  defaultValue: 'eu-west-1',
-                 description: ''),
+                 description: '')
         }
  
  
