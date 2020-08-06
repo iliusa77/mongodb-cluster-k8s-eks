@@ -66,14 +66,14 @@ stages {
                 }
             }
         }
-        // stage('Deploy MongoDB Cluster'){
-        //     steps {
-        //         sh """
-        //            #!/bin/bash
-        //            export NAMESPACE=${namespace}
-        //            envsubst < ci_resources.yml | kubectl create -f -
-        //         """              
-        //     }
-        // }
+        stage('Deploy MongoDB Cluster'){
+            steps {
+                sh """
+                   #!/bin/bash
+                   export NAMESPACE=${namespace}
+                   envsubst < ci_resources.yml | kubectl create -f -
+                """              
+            }
+        }
     } 
 }
