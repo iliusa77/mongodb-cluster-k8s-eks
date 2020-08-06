@@ -4,6 +4,7 @@ kind: ClusterConfig
 metadata:
   name: $EKS_CLUSTER_NAME
   region: $REGION
+  version: "1.16"
 
 nodeGroups:
   - name: mongoNG
