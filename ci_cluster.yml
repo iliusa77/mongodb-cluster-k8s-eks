@@ -14,4 +14,4 @@ nodeGroups:
     minSize: 3
     desiredCapacity: 3
     maxSize: 5
-    availabilityZones: ["$REGIONa", "$REGIONb", "$REGIONc"]
+    availabilityZones: ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
