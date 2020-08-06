@@ -66,17 +66,19 @@ stages {
         }
         stage('Deploy MongoDB Cluster'){
             steps {
-                sh """
-                   #!/bin/bash
-                   export NAMESPACE=${namespace}
-                   export MONGO_DB=${mongo_db_name}
-                   export MONGO_ADMIN=${MONGO_ADMIN_NAME}
-                   export MONGO_ADMIN_PASSWORD=${MONGO_ADMIN_PASSWORD}
-                   export MONGO_USER=${MONGO_USER_NAME}
-                   export MONGO_PASSWORD=${MONGO_USER_PASSWORD}
-                   export REPLICASET_NAME=${replicaset_name}
-                   envsubst < ci_resources.yml | kubectl create -f -
-                """              
+               withAWS(credentials: "aws_access", region: "${region}") {
+                    sh """
+                        #!/bin/bash
+                        export NAMESPACE=${namespace}
+                        export MONGO_DB=${mongo_db_name}
+                        export MONGO_ADMIN=${MONGO_ADMIN_NAME}
+                        export MONGO_ADMIN_PASSWORD=${MONGO_ADMIN_PASSWORD}
+                        export MONGO_USER=${MONGO_USER_NAME}
+                        export MONGO_PASSWORD=${MONGO_USER_PASSWORD}
+                        export REPLICASET_NAME=${replicaset_name}
+                        envsubst < ci_resources.yml | kubectl create -f -
+                    """
+                }           
             }
         }
     } 
