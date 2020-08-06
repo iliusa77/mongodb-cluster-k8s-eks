@@ -50,7 +50,7 @@ stages {
                 checkout scm
             }
         }
-        stage('Deploy EKS Cluster'){
+        /*stage('Deploy EKS Cluster'){
             steps {
                withAWS(credentials: "aws_access", region: "${region}") {
                     sh """
@@ -63,7 +63,7 @@ stages {
                     """
                 }
             }
-        }
+        }*/
         stage('Deploy MongoDB Cluster'){
             steps {
                withAWS(credentials: "aws_access", region: "${region}") {
