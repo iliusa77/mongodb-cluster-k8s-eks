@@ -111,8 +111,6 @@ spec:
               value: $MONGO_USER
             - name: MONGO_PASSWORD
               value: $MONGO_PASSWORD
-            - name: MONGO_USER_ROLE
-              value: $MONGO_USER_ROLE
           command:
           - /bin/sh
           - -c
@@ -125,11 +123,11 @@ spec:
                 - /bin/sh
                 - -c
                 - >
-                  sleep 5;
+                  sleep 10;
                   if [ "$HOSTNAME" = "mongo-0" ]; then
                     mongo --eval "db = db.getSiblingDB(\"admin\"); db.createUser({ user: \"$MONGO_ADMIN\", pwd: \"$MONGO_ADMIN_PASSWORD\", roles: [{ role: \"userAdminAnyDatabase\", db: \"admin\" }, { role: \"readWriteAnyDatabase\", db: \"admin\" }]});";
                     mongo --eval "db = db.getSiblingDB(\"$MONGO_DB\"); db.createUser({ user: \"$MONGO_USER\", pwd: \"$MONGO_PASSWORD\", roles: [{ role: \"readWrite\", db: \"$MONGO_DB\" }]});";
-                    mongo --eval "db = db.getSiblingDB(\"$MONGO_DB\"); db.persons.insertOne({'firstname': 'Sarah', 'lastname': 'Smith'});";
+                    mongo --eval "db = db.getSiblingDB(\"$MONGO_DB\"); db.insertOne({'firstname': 'Sarah', 'lastname': 'Smith'});";
                   fi;
           ports:
             - containerPort: 27017

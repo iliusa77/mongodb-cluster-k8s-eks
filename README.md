@@ -142,14 +142,22 @@ eksctl delete cluster -f cluster.yml
 
 
 
+export NAMESPACE=mongo
+export MONGO_DB=proddb
+export MONGO_ADMIN=admin
+export MONGO_ADMIN_PASSWORD=adminpass
+export MONGO_USER=user1
+export MONGO_PASSWORD=pass1
+export REPLICASET_NAME=MainRepSet
+
+envsubst < ci_resources.yml | kubectl create -f -
 
 
 
 
 
 
-
-
+kubectl exec --namespace=mongo mongo-0 mongo --eval "db = db.getSiblingDB(\"$MONGO_DB\"); db.createUser({ user: \"$MONGO_USER\", pwd: \"$MONGO_PASSWORD\", roles: [{ role: \"readWrite\", db: \"$MONGO_DB\" }]});";
 
 
 

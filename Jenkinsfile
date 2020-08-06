@@ -50,7 +50,7 @@ stages {
                 checkout scm
             }
         }
-        /*stage('Deploy EKS Cluster'){
+        stage('Deploy EKS Cluster'){
             steps {
                withAWS(credentials: "aws_access", region: "${region}") {
                     sh """
@@ -63,7 +63,7 @@ stages {
                     """
                 }
             }
-        }*/
+        }
         stage('Deploy MongoDB Cluster'){
             steps {
                withAWS(credentials: "aws_access", region: "${region}") {
@@ -77,6 +77,20 @@ stages {
                         export MONGO_PASSWORD=${MONGO_USER_PASSWORD}
                         export REPLICASET_NAME=${replicaset_name}
                         envsubst < ci_resources.yml | kubectl create -f -
+                    """
+                }           
+            }
+        }
+        stage('Deploy prometheus-mongodb-exporter'){
+            steps {
+               withAWS(credentials: "aws_access", region: "${region}") {
+                    sh """
+                        #!/bin/bash
+                        export MONGO_ADMIN=${MONGO_ADMIN_NAME}
+                        export MONGO_ADMIN_PASSWORD=${MONGO_ADMIN_PASSWORD}
+                        ELB_URL=$(kubectl get all --namespace ${namespace} | grep LoadBalancer)
+                        helm repo add stable https://kubernetes-charts.storage.googleapis.com
+                        helm upgrade --install mongo-cluster stable/prometheus-mongodb-exporter --values prometheus-mongodb-exporter.values --namespace ${namespace}
                     """
                 }           
             }
