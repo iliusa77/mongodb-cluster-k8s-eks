@@ -24,9 +24,25 @@ pipeline {
                  name: 'namespace',
                  defaultValue: 'mongo',
                  description: '')
+            string(
+                 name: 'mongo_db_name',
+                 defaultValue: 'proddb',
+                 description: '')
+            string(
+                 name: 'replicaset_name',
+                 defaultValue: 'MainRepSet',
+                 description: '')
 
         }
- 
+
+    environment {
+        MONGO_ADMIN = credentials("MONGO_ADMIN")
+        MONGO_ADMIN_NAME = "${env.MONGO_ADMIN_USR}"
+        MONGO_ADMIN_PASSWORD = "${env.MONGO_ADMIN_PSW}"
+        MONGO_USER = credentials("MONGO_USER")
+        MONGO_USER_NAME = "${env.MONGO_USER_USR}"
+        MONGO_USER_PASSWORD = "${env.MONGO_USER_PSW}"
+    }
  
 stages {
         stage('Checkout'){
@@ -53,6 +69,12 @@ stages {
                 sh """
                    #!/bin/bash
                    export NAMESPACE=${namespace}
+                   export MONGO_DB=${mongo_db_name}
+                   export MONGO_ADMIN=${MONGO_ADMIN_NAME}
+                   export MONGO_ADMIN_PASSWORD=${MONGO_ADMIN_PASSWORD}
+                   export MONGO_USER=${MONGO_USER_NAME}
+                   export MONGO_PASSWORD=${MONGO_USER_PASSWORD}
+                   export REPLICASET_NAME=${replicaset_name}
                    envsubst < ci_resources.yml | kubectl create -f -
                 """              
             }
