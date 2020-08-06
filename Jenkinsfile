@@ -34,24 +34,6 @@ stages {
                 checkout scm
             }
         }
-        /*stage('Deploy EKS Cluster'){
-            steps {
-               withAWS(credentials: "aws_access", region: "${region}") {
-                    sh """
-                        #!/bin/bash
-                        eksctl create cluster \
-                        --name ${eks_cluster_name} \
-                        --region ${region} \
-                        --nodes 3 \
-                        --nodes-min 3
-                        --nodes-max 5
-                        --node-type ${ec2_type_server} 
-                        --node-volume-size ${ec2_volume_size}
-                        --node-volume-type gp2
-                    """
-                }
-            }
-        }*/
         stage('Deploy EKS Cluster'){
             steps {
                withAWS(credentials: "aws_access", region: "${region}") {
