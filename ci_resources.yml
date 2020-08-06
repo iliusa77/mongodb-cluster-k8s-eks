@@ -1,0 +1,176 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: $NAMESPACE
+# ---
+# apiVersion: v1
+# kind: ServiceAccount
+# metadata:
+#   name: mongo
+#   namespace: $NAMESPACE
+# ---
+# apiVersion: rbac.authorization.k8s.io/v1
+# kind: ClusterRoleBinding
+# metadata:
+#   name: mongo
+# subjects:
+#   - kind: ServiceAccount
+#     name: mongo
+#     namespace: $NAMESPACE
+# roleRef:
+#   kind: ClusterRole
+#   name: cluster-admin
+#   apiGroup: rbac.authorization.k8s.io
+# ---
+# apiVersion: storage.k8s.io/v1
+# kind: StorageClass
+# metadata:
+#   name: fast
+# provisioner: kubernetes.io/aws-ebs
+# volumeBindingMode: WaitForFirstConsumer
+# parameters:
+#   type: gp2
+#   fsType: xfs
+# allowVolumeExpansion: true
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#  name: mongo
+#  namespace: mongo
+#  labels:
+#    name: mongo
+# spec:
+#  ports:
+#  - port: 27017
+#    targetPort: 27017
+#  clusterIP: None
+#  selector:
+#    role: mongo
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: mongo-lb
+#   namespace: mongo
+#   labels:
+#     name: mongo-lb
+# spec:
+#   type: LoadBalancer
+#   selector:
+#     statefulset.kubernetes.io/pod-name: mongo-0
+#   ports:
+#   - protocol: TCP
+#     port: 27017
+#     targetPort: 27017
+# ---
+# apiVersion: apps/v1
+# kind: StatefulSet
+# metadata:
+#   name: mongo
+#   namespace: mongo
+# spec:
+#   selector:
+#     matchLabels:
+#       role: mongo
+#       environment: prod
+#   serviceName: mongo
+#   replicas: 3
+#   template:
+#     metadata:
+#       labels:
+#         role: mongo
+#         environment: prod
+#         replicaset: MainRepSet
+#     spec:
+#       affinity:
+#         podAntiAffinity:
+#           preferredDuringSchedulingIgnoredDuringExecution:
+#           - weight: 100
+#             podAffinityTerm:
+#               labelSelector:
+#                 matchExpressions:
+#                 - key: replicaset
+#                   operator: In
+#                   values:
+#                   - MainRepSet
+#               topologyKey: kubernetes.io/hostname
+#       terminationGracePeriodSeconds: 10
+#       serviceAccountName: mongo
+#       containers:
+#         - name: mongo
+#           image: mongo
+#           env:
+#             - name: MONGO_ADMIN
+#               valueFrom:
+#                 secretKeyRef:
+#                   name: mongo-secret
+#                   key: MONGO_ADMIN
+#             - name: MONGO_ADMIN_PASSWORD
+#               valueFrom:
+#                 secretKeyRef:
+#                   name: mongo-secret
+#                   key: MONGO_ADMIN_PASSWORD
+#             - name: MONGO_DB
+#               valueFrom:
+#                 secretKeyRef:
+#                   name: mongo-secret
+#                   key: MONGO_DB
+#             - name: MONGO_USER
+#               valueFrom:
+#                 secretKeyRef:
+#                   name: mongo-secret
+#                   key: MONGO_USER
+#             - name: MONGO_PASSWORD
+#               valueFrom:
+#                 secretKeyRef:
+#                   name: mongo-secret
+#                   key: MONGO_PASSWORD
+#             - name: MONGO_USER_ROLE
+#               valueFrom:
+#                 secretKeyRef:
+#                   name: mongo-secret
+#                   key: MONGO_USER_ROLE
+#           command:
+#           - /bin/sh
+#           - -c
+#           - >
+#             mongod --bind_ip 0.0.0.0 --replSet MainRepSet 
+#           lifecycle:
+#             postStart:
+#               exec:
+#                 command:
+#                 - /bin/sh
+#                 - -c
+#                 - >
+#                   sleep 5;
+#                   if [ "$HOSTNAME" = "mongo-0" ]; then
+#                     mongo --eval "db = db.getSiblingDB(\"admin\"); db.createUser({ user: \"$MONGO_ADMIN\", pwd: \"$MONGO_ADMIN_PASSWORD\", roles: [{ role: \"userAdminAnyDatabase\", db: \"admin\" }, { role: \"readWriteAnyDatabase\", db: \"admin\" }]});";
+#                     mongo --eval "db = db.getSiblingDB(\"$MONGO_DB\"); db.createUser({ user: \"$MONGO_USER\", pwd: \"$MONGO_PASSWORD\", roles: [{ role: \"readWrite\", db: \"$MONGO_DB\" }]});";
+#                     mongo --eval "db = db.getSiblingDB(\"$MONGO_DB\"); db.persons.insertOne({'firstname': 'Sarah', 'lastname': 'Smith'});";
+#                   fi;
+#           ports:
+#             - containerPort: 27017
+#           volumeMounts:
+#             - name: mongo-persistent-storage
+#               mountPath: /data/db
+#         - name: mongo-sidecar
+#           image: cvallance/mongo-k8s-sidecar
+#           env:
+#             - name: MONGO_SIDECAR_POD_LABELS
+#               value: "role=mongo,environment=prod"
+#             - name: KUBE_NAMESPACE
+#               value: "mongo"
+#             - name: KUBERNETES_MONGO_SERVICE_NAME
+#               value: "mongo"
+#   volumeClaimTemplates:
+#   - metadata:
+#       name: mongo-persistent-storage
+#       annotations:
+#         volume.beta.kubernetes.io/storage-class: "fast"
+#     spec:
+#       accessModes: [ "ReadWriteOnce" ]
+#       storageClassName: fast
+#       resources:
+#         requests:
+#           storage: 2Gi

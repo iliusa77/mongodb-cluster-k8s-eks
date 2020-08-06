@@ -9,13 +9,22 @@ pipeline {
                  defaultValue: '',
                  description: '')
             string(
+                 name: 'region',
+                 defaultValue: 'eu-west-1',
+                 description: '')
+            string(
                  name: 'ec2_type_server',
                  defaultValue: 't2.micro',
                  description: '')
             string(
-                 name: 'region',
-                 defaultValue: 'eu-west-1',
+                 name: 'ec2_volume_size',
+                 defaultValue: '8',
                  description: '')
+            string(
+                 name: 'namespace',
+                 defaultValue: 'mongo',
+                 description: '')
+
         }
  
  
@@ -25,7 +34,7 @@ stages {
                 checkout scm
             }
         }
-        stage('Deploy Cluster'){
+        /*stage('Deploy EKS Cluster'){
             steps {
                withAWS(credentials: "aws_access", region: "${region}") {
                     sh """
@@ -37,10 +46,19 @@ stages {
                         --nodes-min 3
                         --nodes-max 5
                         --node-type ${ec2_type_server} 
-                        --node-volume-size 8
+                        --node-volume-size ${ec2_volume_size}
                         --node-volume-type gp2
                     """
                 }
+            }
+        }*/
+        stage('Deploy MongoDB Cluster'){
+            steps {
+                sh """
+                   #!/bin/bash
+                   export NAMESPACE=${namespace}
+                   envsubst < ci_resources.yml | kubectl create -f -
+                """              
             }
         }
     } 
