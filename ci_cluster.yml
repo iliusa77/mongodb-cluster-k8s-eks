@@ -1,0 +1,16 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: $EKS_CLUSTER_NAME
+  region: $REGION
+
+nodeGroups:
+  - name: mongoNG
+    instanceType: $EC2_TYPE_SERVER
+    volumeSize: $EC2_VOLUME_SIZE
+    volumeType: gp2
+    minSize: 3
+    desiredCapacity: 3
+    maxSize: 5
+    availabilityZones: ["$REGIONa", "$REGIONb", "$REGIONc"]

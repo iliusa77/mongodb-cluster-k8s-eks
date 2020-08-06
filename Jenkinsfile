@@ -52,14 +52,28 @@ stages {
                 }
             }
         }*/
-        stage('Deploy MongoDB Cluster'){
+        stage('Deploy EKS Cluster'){
             steps {
-                sh """
-                   #!/bin/bash
-                   export NAMESPACE=${namespace}
-                   envsubst < ci_resources.yml | kubectl create -f -
-                """              
+               withAWS(credentials: "aws_access", region: "${region}") {
+                    sh """
+                        #!/bin/bash
+                        export EKS_CLUSTER_NAME=${eks_cluster_name}
+                        export REGION=${region}
+                        export EC2_TYPE_SERVER=${ec2_type_server}
+                        export EC2_VOLUME_SIZE=${ec2_volume_size}
+                        envsubst < ci_cluster.yml | eksctl create cluster -f - 
+                    """
+                }
             }
         }
+        // stage('Deploy MongoDB Cluster'){
+        //     steps {
+        //         sh """
+        //            #!/bin/bash
+        //            export NAMESPACE=${namespace}
+        //            envsubst < ci_resources.yml | kubectl create -f -
+        //         """              
+        //     }
+        // }
     } 
 }
