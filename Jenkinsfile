@@ -87,8 +87,8 @@ stages {
                     sh """
                         #!/bin/bash
                         kubectl exec -it --namespace=${namespace} mongo-0 bash
-                        mongo --eval "db = db.getSiblingDB(\"admin\"); db.createUser({ user: \"${MONGO_ADMIN}\", pwd: \"${MONGO_ADMIN_PASSWORD}\", roles: [{ role: \"userAdminAnyDatabase\", db: \"admin\" }, { role: \"readWriteAnyDatabase\", db: \"admin\" }]});";
-                        mongo --eval "db = db.getSiblingDB(\"${mongo_db_name}\"); db.createUser({ user: \"${MONGO_USER}\", pwd: \"${MONGO_PASSWORD}\", roles: [{ role: \"readWrite\", db: \"${MONGO_DB}\" }]});";
+                        mongo --eval "db = db.getSiblingDB(\"admin\"); db.createUser({ user: \"${MONGO_ADMIN_NAME}\", pwd: \"${MONGO_ADMIN_PASSWORD}\", roles: [{ role: \"userAdminAnyDatabase\", db: \"admin\" }, { role: \"readWriteAnyDatabase\", db: \"admin\" }]});";
+                        mongo --eval "db = db.getSiblingDB(\"${mongo_db_name}\"); db.createUser({ user: \"${MONGO_USER_NAME}\", pwd: \"${MONGO_USER_PASSWORD}\", roles: [{ role: \"readWrite\", db: \"${mongo_db_name}\" }]});";
                         mongo --eval "db = db.getSiblingDB(\"${mongo_db_name}\"); db.insertOne({'firstname': 'Sarah', 'lastname': 'Smith'});";
                     """
                 }           
