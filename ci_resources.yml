@@ -116,19 +116,6 @@ spec:
           - -c
           - >
             mongod --bind_ip 0.0.0.0 --replSet $REPLICASET_NAME 
-          lifecycle:
-            postStart:
-              exec:
-                command:
-                - /bin/sh
-                - -c
-                - >
-                  sleep 10;
-                  if [ "$HOSTNAME" = "mongo-0" ]; then
-                    mongo --eval "db = db.getSiblingDB(\"admin\"); db.createUser({ user: \"$MONGO_ADMIN\", pwd: \"$MONGO_ADMIN_PASSWORD\", roles: [{ role: \"userAdminAnyDatabase\", db: \"admin\" }, { role: \"readWriteAnyDatabase\", db: \"admin\" }]});";
-                    mongo --eval "db = db.getSiblingDB(\"$MONGO_DB\"); db.createUser({ user: \"$MONGO_USER\", pwd: \"$MONGO_PASSWORD\", roles: [{ role: \"readWrite\", db: \"$MONGO_DB\" }]});";
-                    #mongo --eval "db = db.getSiblingDB(\"$MONGO_DB\"); db.insertOne({'firstname': 'Sarah', 'lastname': 'Smith'});";
-                  fi;
           ports:
             - containerPort: 27017
           volumeMounts:

@@ -63,7 +63,7 @@ stages {
                     """
                 }
             }
-        }
+        }*/
         stage('Deploy MongoDB Cluster'){
             steps {
                withAWS(credentials: "aws_access", region: "${region}") {
@@ -80,12 +80,13 @@ stages {
                     """
                 }           
             }
-        }*/
+        }
         stage('Provision'){
             steps {
                withAWS(credentials: "aws_access", region: "${region}") {
                     sh """
                         #!/bin/bash
+                        sleep 30
                         kubectl cp ./provision.sh --namespace=mongo mongo-0:/tmp
                         kubectl exec --namespace=mongo mongo-0 -- chown root:root /tmp/provision.sh
                         kubectl exec --namespace=mongo mongo-0 -- chmod +x /tmp/provision.sh
@@ -94,7 +95,7 @@ stages {
                 }           
             }
         }
-        /*stage('Deploy prometheus-mongodb-exporter'){
+        stage('Deploy prometheus-mongodb-exporter'){
             steps {
                withAWS(credentials: "aws_access", region: "${region}") {
                     sh """
@@ -114,6 +115,6 @@ stages {
                     """
                 }           
             }
-        }*/
+        }
     } 
 }
