@@ -93,7 +93,7 @@ stages {
                         envsubst < prometheus-mongodb-exporter.values | helm upgrade --install mongo-cluster stable/prometheus-mongodb-exporter --values - --namespace ${namespace}
                         sleep 15
                         exporter_elb_url=$(kubectl get svc -n ${namespace} | grep LoadBalancer | grep 9216 | awk '{print \$4}')
-                        echo "endpoint for Prometheus metrics is $exporter_elb_url:9216/metrics"
+                        echo "endpoint for Prometheus metrics is \$exporter_elb_url:9216/metrics"
                     """
                 }           
             }
