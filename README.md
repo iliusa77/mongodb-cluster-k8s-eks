@@ -58,7 +58,7 @@ eksctl create cluster -f cluster.yml
 
 Reconfigure kubectl to new cluster
 ```
-aws eks --region <region> update-kubeconfig --name mongoClusterProd
+aws eks --region <region> update-kubeconfig --name <clustername>
 ```
 
 ### Deploy MongoDB resources
