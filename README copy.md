@@ -37,7 +37,7 @@ Notes:  *production-like* is not meant in sense of performance, but in sense of 
 - namespace
 - mongo_db_name
 - replicaset_name
-5. During deploy in Jenkins build console get the following output values:
+5. During deploy in Jenkins build console get the
 
 
 
