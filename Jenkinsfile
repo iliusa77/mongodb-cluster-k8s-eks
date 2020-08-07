@@ -50,7 +50,7 @@ stages {
                 checkout scm
             }
         }
-        /*stage('Deploy EKS Cluster'){
+        stage('Deploy EKS Cluster'){
             steps {
                withAWS(credentials: "aws_access", region: "${region}") {
                     sh """
@@ -80,7 +80,7 @@ stages {
                     """
                 }           
             }
-        }*/
+        }
         stage('Deploy prometheus-mongodb-exporter'){
             steps {
                withAWS(credentials: "aws_access", region: "${region}") {
@@ -97,7 +97,7 @@ stages {
                         export ELB_URL=\$(kubectl get svc -n ${namespace} | grep LoadBalancer | cut -d ' ' -f10)
                         envsubst < prometheus-mongodb-exporter.values | helm install --name mongo-cluster stable/prometheus-mongodb-exporter --namespace ${namespace} --values -
                         sleep 15
-                        export EXPORTER_ELB_URL=\$(kubectl get svc -n ${namespace} | grep LoadBalancer | grep 9216 | cut -d ' ' -f10)
+                        export ENDPOINT_PROMETEUS_METRICS=\$(kubectl get svc -n ${namespace} | grep LoadBalancer | grep 9216 | cut -d ' ' -f10):9216/metrics
                     """
                 }           
             }
