@@ -63,7 +63,7 @@ stages {
                     """
                 }
             }
-        }
+        }*/
         stage('Deploy MongoDB Cluster'){
             steps {
                withAWS(credentials: "aws_access", region: "${region}") {
@@ -94,7 +94,7 @@ stages {
                     """
                 }           
             }
-        }*/
+        }
         stage('Deploy prometheus-mongodb-exporter'){
             steps {
                withAWS(credentials: "aws_access", region: "${region}") {
