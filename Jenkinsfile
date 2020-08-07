@@ -63,7 +63,7 @@ stages {
                     """
                 }
             }
-        }*/
+        }
         stage('Deploy MongoDB Cluster'){
             steps {
                withAWS(credentials: "aws_access", region: "${region}") {
@@ -94,14 +94,14 @@ stages {
                     """
                 }           
             }
-        }
+        }*/
         stage('Deploy prometheus-mongodb-exporter'){
             steps {
                withAWS(credentials: "aws_access", region: "${region}") {
                     sh """
                         #!/bin/bash
                         curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash
-                        kubectl create serviceaccount --namespace kube-system tiller
+                        #kubectl create serviceaccount --namespace kube-system tiller
                         kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
                         kubectl patch deploy --namespace kube-system tiller -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'      
                         helm init --service-account tiller --upgrade
