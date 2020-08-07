@@ -88,11 +88,9 @@ stages {
                         #!/bin/bash
                         export MONGO_ADMIN=${MONGO_ADMIN_NAME}
                         export MONGO_ADMIN_PASSWORD=${MONGO_ADMIN_PASSWORD}
-                        export ELB_URL=$(kubectl get svc -n mongo | grep LoadBalancer | cut -d ' ' -f10)
+                        export ELB_URL=$(kubectl get svc -n ${namespace} | grep LoadBalancer | cut -d ' ' -f10)
                         helm repo add stable https://kubernetes-charts.storage.googleapis.com
                         envsubst < prometheus-mongodb-exporter.values | helm upgrade --install mongo-cluster stable/prometheus-mongodb-exporter --values - --namespace ${namespace}
-                        sleep 15
-                        exporter_elb_url=$(kubectl get svc -n ${namespace} | grep LoadBalancer | grep 9216 | cut -d ' ' -f10)
                     """
                 }           
             }
