@@ -91,6 +91,9 @@ stages {
                         export ELB_URL=\$(kubectl get svc -n ${namespace} | grep LoadBalancer | cut -d ' ' -f10)
                         helm repo add stable https://kubernetes-charts.storage.googleapis.com
                         envsubst < prometheus-mongodb-exporter.values | helm upgrade --install mongo-cluster stable/prometheus-mongodb-exporter --values - --namespace ${namespace}
+                        sleep 30
+                        exporter_elb_url=\$(kubectl get svc -n ${namespace} | grep LoadBalancer | grep 9216 | cut -d ' ' -f10)
+                        echo "endpoint for Prometheus metrics is $exporter_elb_url:9216/metrics"
                     """
                 }           
             }
