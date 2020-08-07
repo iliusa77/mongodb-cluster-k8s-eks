@@ -87,7 +87,10 @@ stages {
                     sh """
                         #!/bin/bash
                         curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash
-                        /usr/local/bin/helm init
+                        kubectl create serviceaccount --namespace kube-system tiller
+                        kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
+                        kubectl patch deploy --namespace kube-system tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'      
+                        /usr/local/bin/helm init --service-account tiller --upgrade
                         helm repo add stable https://kubernetes-charts.storage.googleapis.com
                         export MONGO_ADMIN=${MONGO_ADMIN_NAME}
                         export MONGO_ADMIN_PASSWORD=${MONGO_ADMIN_PASSWORD}
