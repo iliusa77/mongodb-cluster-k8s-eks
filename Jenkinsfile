@@ -92,7 +92,7 @@ stages {
                         helm repo add stable https://kubernetes-charts.storage.googleapis.com
                         envsubst < prometheus-mongodb-exporter.values | helm install mongo-cluster stable/prometheus-mongodb-exporter --namespace ${namespace} --values - 
                         sleep 15
-                        kubectl get svc -n ${namespace} | grep LoadBalancer | grep 9216 | cut -d ' ' -f10`
+                        kubectl get svc -n ${namespace} | grep LoadBalancer | grep 9216 | cut -d ' ' -f10
                     """
                 }           
             }
