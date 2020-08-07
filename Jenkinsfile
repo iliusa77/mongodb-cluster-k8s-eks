@@ -81,7 +81,7 @@ stages {
                 }           
             }
         }
-        stage('Deploy prometheus-mongodb-exporter'){
+        /*stage('Deploy prometheus-mongodb-exporter'){
             steps {
                withAWS(credentials: "aws_access", region: "${region}") {
                     sh """
@@ -94,6 +94,6 @@ stages {
                     """
                 }           
             }
-        }
+        }*/
     } 
 }
