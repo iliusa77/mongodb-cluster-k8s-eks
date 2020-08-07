@@ -50,7 +50,7 @@ stages {
                 checkout scm
             }
         }
-        stage('Deploy EKS Cluster'){
+        /*stage('Deploy EKS Cluster'){
             steps {
                withAWS(credentials: "aws_access", region: "${region}") {
                     sh """
@@ -77,6 +77,19 @@ stages {
                         export MONGO_PASSWORD=${MONGO_USER_PASSWORD}
                         export REPLICASET_NAME=${replicaset_name}
                         envsubst < ci_resources.yml | kubectl create -f -
+                    """
+                }           
+            }
+        }*/
+        stage('Provision'){
+            steps {
+               withAWS(credentials: "aws_access", region: "${region}") {
+                    sh """
+                        #!/bin/bash
+                        kubectl exec -it --namespace=mongo mongo-0 bash
+                        mongo --eval "db = db.getSiblingDB(\"admin\"); db.createUser({ user: \"$MONGO_ADMIN\", pwd: \"$MONGO_ADMIN_PASSWORD\", roles: [{ role: \"userAdminAnyDatabase\", db: \"admin\" }, { role: \"readWriteAnyDatabase\", db: \"admin\" }]});";
+                        mongo --eval "db = db.getSiblingDB(\"$MONGO_DB\"); db.createUser({ user: \"$MONGO_USER\", pwd: \"$MONGO_PASSWORD\", roles: [{ role: \"readWrite\", db: \"$MONGO_DB\" }]});";
+                        mongo --eval "db = db.getSiblingDB(\"$MONGO_DB\"); db.insertOne({'firstname': 'Sarah', 'lastname': 'Smith'});";
                     """
                 }           
             }
