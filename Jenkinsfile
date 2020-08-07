@@ -90,10 +90,9 @@ stages {
                         export MONGO_ADMIN_PASSWORD=${MONGO_ADMIN_PASSWORD}
                         export ELB_URL=`kubectl get svc -n ${namespace} | grep LoadBalancer | cut -d ' ' -f10`
                         helm repo add stable https://kubernetes-charts.storage.googleapis.com
-                        envsubst < prometheus-mongodb-exporter.values | helm upgrade --install mongo-cluster stable/prometheus-mongodb-exporter --values - --namespace ${namespace}
-                        sleep 30
-                        echo 
-                        echo "endpoint for Prometheus metrics is `kubectl get svc -n ${namespace} | grep LoadBalancer | grep 9216 | cut -d ' ' -f10`:9216/metrics"
+                        envsubst < prometheus-mongodb-exporter.values | helm install mongo-cluster stable/prometheus-mongodb-exporter --namespace ${namespace} --values - 
+                        sleep 15
+                        kubectl get svc -n ${namespace} | grep LoadBalancer | grep 9216 | cut -d ' ' -f10`
                     """
                 }           
             }
