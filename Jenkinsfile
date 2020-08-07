@@ -111,7 +111,7 @@ stages {
                         #export MONGO_ADMIN_PASSWORD=${MONGO_ADMIN_PASSWORD}
                         #export ELB_URL=\$(kubectl get svc -n ${namespace} | grep LoadBalancer | cut -d ' ' -f10)
                         #envsubst < prometheus-mongodb-exporter.values | helm install --name mongo-cluster stable/prometheus-mongodb-exporter --namespace ${namespace} --values -
-                        sleep 15
+                        #sleep 15
                         echo "Final output:"
                         export ENDPOINT_PROMETEUS_METRICS=\$(kubectl get svc -n ${namespace} | grep LoadBalancer | grep 9216 | cut -d ' ' -f10):9216/metrics
                         echo $user
