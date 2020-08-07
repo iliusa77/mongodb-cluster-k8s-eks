@@ -50,7 +50,7 @@ stages {
                 checkout scm
             }
         }
-        /*stage('Deploy EKS Cluster'){
+        stage('Deploy EKS Cluster'){
             steps {
                withAWS(credentials: "aws_access", region: "${region}") {
                     sh """
@@ -94,16 +94,16 @@ stages {
                     """
                 }           
             }
-        }*/
+        }
         stage('Deploy prometheus-mongodb-exporter'){
             steps {
                withAWS(credentials: "aws_access", region: "${region}") {
                     sh """
                         #!/bin/bash
                         curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash
-                        #kubectl create serviceaccount --namespace kube-system tiller
-                        #kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
-                        kubectl patch deploy --namespace kube-system tiller -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'      
+                        kubectl create serviceaccount --namespace kube-system tiller
+                        kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
+                        kubectl patch deploy --namespace kube-system tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'
                         helm init --service-account tiller --upgrade
                         helm repo add stable https://kubernetes-charts.storage.googleapis.com
                         export MONGO_ADMIN=${MONGO_ADMIN_NAME}
