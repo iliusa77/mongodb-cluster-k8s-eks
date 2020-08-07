@@ -50,7 +50,7 @@ stages {
                 checkout scm
             }
         }
-        /*stage('Deploy EKS Cluster'){
+        stage('Deploy EKS Cluster'){
             steps {
                withAWS(credentials: "aws_access", region: "${region}") {
                     sh """
@@ -80,15 +80,14 @@ stages {
                     """
                 }           
             }
-        }*/
+        }
         stage('Provision'){
             steps {
                withAWS(credentials: "aws_access", region: "${region}") {
                     sh """
                         #!/bin/bash
-                        kubectl exec --namespace=${namespace} mongo-0 -- bash -c "mongo --eval \"db = db.getSiblingDB(\"admin\"); db.createUser({ user: \"${MONGO_ADMIN_NAME}\", pwd: \"${MONGO_ADMIN_PASSWORD}\", roles: [{ role: \"userAdminAnyDatabase\", db: \"admin\" }, { role: \"readWriteAnyDatabase\", db: \"admin\" }]});\" && \
-                            mongo --eval \"db = db.getSiblingDB(\"${mongo_db_name}\"); db.createUser({ user: \"${MONGO_USER_NAME}\", pwd: \"${MONGO_USER_PASSWORD}\", roles: [{ role: \"readWrite\", db: \"${mongo_db_name}\" }]});\" && \
-                            mongo --eval \"db = db.getSiblingDB(\"${mongo_db_name}\"); db.insertOne({'firstname': 'Sarah', 'lastname': 'Smith'});\""                
+                        kubectl cp ./provision.sh --namespace=mongo mongo-0:/tmp
+                        kubectl exec --namespace=mongo mongo-0 /tmp/provision.sh
                     """
                 }           
             }
