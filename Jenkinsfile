@@ -100,8 +100,6 @@ stages {
                withAWS(credentials: "aws_access", region: "${region}") {
                     sh """
                         #!/bin/bash
-                        user=$(kubectl exec --namespace=mongo mongo-0 -- env | grep MONGO_USER)
-                        password=$(kubectl exec --namespace=mongo mongo-0 -- env | grep MONGO_PASSWORD)
                         #curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash
                         #kubectl create serviceaccount --namespace kube-system tiller
                         #kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
@@ -114,8 +112,8 @@ stages {
                         #sleep 15
                         echo "Final output:"
                         export ENDPOINT_PROMETEUS_METRICS=\$(kubectl get svc -n ${namespace} | grep LoadBalancer | grep 9216 | cut -d ' ' -f10):9216/metrics
-                        echo \$user
-                        echo \$password
+                        kubectl exec --namespace=mongo mongo-0 -- env | grep MONGO_USER
+                        kubectl exec --namespace=mongo mongo-0 -- env | grep MONGO_PASSWORD
                     """
                 }           
             }
