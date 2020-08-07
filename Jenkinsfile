@@ -92,7 +92,7 @@ stages {
                         helm repo add stable https://kubernetes-charts.storage.googleapis.com
                         envsubst < prometheus-mongodb-exporter.values | helm upgrade install --generate-name stable/prometheus-mongodb-exporter --namespace ${namespace} --values -
                         sleep 15
-                        kubectl get svc -n ${namespace} | grep LoadBalancer | grep 9216 | cut -d ' ' -f10
+                        export EXPORTER_ELB_URL=\$(kubectl get svc -n ${namespace} | grep LoadBalancer | grep 9216 | cut -d ' ' -f10)
                     """
                 }           
             }
