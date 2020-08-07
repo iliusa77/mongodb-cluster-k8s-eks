@@ -114,8 +114,8 @@ stages {
                         #sleep 15
                         echo "Final output:"
                         export ENDPOINT_PROMETEUS_METRICS=\$(kubectl get svc -n ${namespace} | grep LoadBalancer | grep 9216 | cut -d ' ' -f10):9216/metrics
-                        echo $user
-                        echo $password
+                        echo \$user
+                        echo \$password
                     """
                 }           
             }
