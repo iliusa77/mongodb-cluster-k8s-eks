@@ -180,6 +180,7 @@ kubectl exec --namespace=mongo mongo-0 mongo --eval "db = db.getSiblingDB(\"$MON
 
 
 
+helm upgrade --install mongo-cluster stable/prometheus-mongodb-exporter --namespace mongo -mongodb.uri "mongodb://admin:adminpass@$(kubectl get svc -n mongo | grep LoadBalancer | awk '{print $4}'):27017/admin" -serviceMonitor.enabled false -service.type LoadBalancer
 
 
 
