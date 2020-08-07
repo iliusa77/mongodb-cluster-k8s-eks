@@ -87,8 +87,9 @@ stages {
                     sh """
                         #!/bin/bash
                         kubectl cp ./provision.sh --namespace=mongo mongo-0:/tmp
-                        kubectl exec --namespace=mongo mongo-0 chown root:root /tmp/provision.sh
-                        kubectl exec --namespace=mongo mongo-0 /tmp/provision.sh
+                        kubectl exec --namespace=mongo mongo-0 -- chown root:root /tmp/provision.sh
+                        kubectl exec --namespace=mongo mongo-0 -- chmod +x /tmp/provision.sh
+                        kubectl exec --namespace=mongo mongo-0 -- /tmp/provision.sh
                     """
                 }           
             }
