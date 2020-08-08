@@ -50,7 +50,7 @@ stages {
                 checkout scm
             }
         }
-        /*stage('Deploy EKS Cluster'){
+        stage('Deploy EKS Cluster'){
             steps {
                withAWS(credentials: "aws_access", region: "${region}") {
                     sh """
@@ -94,26 +94,23 @@ stages {
                     """
                 }           
             }
-        }*/
+        }
         stage('Deploy prometheus-mongodb-exporter'){
             steps {
                withAWS(credentials: "aws_access", region: "${region}") {
                     sh """
                         #!/bin/bash
-                        #curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash
-                        #kubectl create serviceaccount --namespace kube-system tiller
-                        #kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
-                        #helm init --service-account tiller --upgrade
-                        #helm repo add stable https://kubernetes-charts.storage.googleapis.com
-                        #export MONGO_ADMIN=${MONGO_ADMIN_NAME}
-                        #export MONGO_ADMIN_PASSWORD=${MONGO_ADMIN_PASSWORD}
-                        #export ELB_URL=\$(kubectl get svc -n ${namespace} | grep LoadBalancer | cut -d ' ' -f10)
-                        #envsubst < prometheus-mongodb-exporter.values | helm install --name mongo-cluster stable/prometheus-mongodb-exporter --namespace ${namespace} --values -
-                        #sleep 15
-                        echo "Final output:"
+                        curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash
+                        kubectl create serviceaccount --namespace kube-system tiller
+                        kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
+                        helm init --service-account tiller --upgrade
+                        helm repo add stable https://kubernetes-charts.storage.googleapis.com
+                        export MONGO_ADMIN=${MONGO_ADMIN_NAME}
+                        export MONGO_ADMIN_PASSWORD=${MONGO_ADMIN_PASSWORD}
+                        export ELB_URL=\$(kubectl get svc -n ${namespace} | grep LoadBalancer | cut -d ' ' -f10)
+                        envsubst < prometheus-mongodb-exporter.values | helm install --name mongo-cluster stable/prometheus-mongodb-exporter --namespace ${namespace} --values -
+                        sleep 15
                         export ENDPOINT_PROMETEUS_METRICS=\$(kubectl get svc -n ${namespace} | grep LoadBalancer | grep 9216 | cut -d ' ' -f10):9216/metrics
-                        kubectl exec --namespace=mongo mongo-0 -- env | grep MONGO_USER
-                        kubectl exec --namespace=mongo mongo-0 -- env | grep MONGO_PASSWORD
                     """
                 }           
             }

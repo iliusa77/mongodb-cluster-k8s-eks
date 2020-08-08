@@ -24,7 +24,7 @@ Notes:  *production-like* is not meant in sense of performance, but in sense of 
     Setup and auto attach AWS EBS volumes as PV.
     To obtain metrics from the MongoDB cluster prometheus-mongodb-exporter will be deployed.
 
-### Jenkins 
+### Deploy with Jenkins Pipeline
 
 1. Install Jenkins plugins: "AWS Secrets Manager Credentials", "Pipeline", "Pipeline:AWS Steps"
 2. Create 3 pairs secrets in Jenkins Credentials ("aws_access" - kind "AWS Credentials", "MONGO_ADMIN" - kind "Username with password", "MONGO_USER"- "kind Username with password")
@@ -37,7 +37,7 @@ Notes:  *production-like* is not meant in sense of performance, but in sense of 
 - namespace
 - mongo_db_name
 - replicaset_name
-5. During deploy in Jenkins build console get the
+6. See endpoint for Prometheus metrics in the end of Jenkins build console output
 
 
 
